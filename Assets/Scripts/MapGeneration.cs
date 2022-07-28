@@ -85,16 +85,41 @@ public class MapGeneration : MonoBehaviour
             }
         }
 
+        TurnOnWalls();
+    }
+
+    private void TurnOnWalls()
+    {
         foreach (var room in _roomsGameObjects)
         {
             var pointsList = room.transform.Find("Points");
             foreach (Transform point in pointsList)
             {
                 var createBlock = true;
+
+                var pSide = point.gameObject.GetComponent<PointController>().side;
+                
                 foreach (var room2 in _roomsGameObjects)
                 {
                     if (room2.transform.position == point.position)
                     {
+                        var room2Directions = new List<string>();
+                        
+                        var points2List = room2.transform.Find("Points");
+                        foreach (Transform point2 in points2List)
+                        {
+                            var p2Side = point2.gameObject.GetComponent<PointController>().side;
+                            room2Directions.Add(p2Side);
+                        }
+
+                        if (pSide == "L" && !room2Directions.Contains("R") ||
+                            pSide == "R" && !room2Directions.Contains("L") ||
+                            pSide == "U" && !room2Directions.Contains("D") ||
+                            pSide == "D" && !room2Directions.Contains("U"))
+                        {
+                            room.transform.Find("BlockWalls").Find($"BlockWall_{pSide}").gameObject.SetActive(true);   
+                        }
+                        
                         createBlock = false;
                         break;
                     }

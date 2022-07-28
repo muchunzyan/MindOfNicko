@@ -260,7 +260,7 @@ MonoBehaviour:
   - {fileID: 6480786464950512342, guid: 0574f292e13a948bf8fe955a1c141b96, type: 3}
   - {fileID: 4039734205322817781, guid: 419a3c2a53901434ea8f26a11cce4017, type: 3}
   - {fileID: 8967387455727776740, guid: ff00cfbbd78b64130b40b44df8a578d7, type: 3}
-  numberOfRooms: 20
+  numberOfRooms: 100
   possibleRoomsForL:
   - {fileID: 7937126812949318673, guid: 3f95c036ebd554e11a4e86b80f43810e, type: 3}
   - {fileID: 8967387455727776740, guid: 3c568ca8f13c34405b7080a07bbfccaa, type: 3}
