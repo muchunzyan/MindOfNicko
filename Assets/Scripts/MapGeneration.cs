@@ -23,7 +23,7 @@ public class MapGeneration : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.R))
         {
-            SceneManager.LoadScene("Game");
+            SceneManager.LoadScene("Game2D");
         }
     }
 
