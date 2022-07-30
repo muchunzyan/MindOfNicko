@@ -59,22 +59,22 @@ public class MapGeneration : MonoBehaviour
                 GameObject newRoom = null;
                 switch (side)
                 {
-                    case "L":
+                    case 'L':
                         newRoom = Instantiate(possibleRoomsForL[Random.Range(0, possibleRoomsForL.Count - 1)],
                             point.position, Quaternion.identity);
                         newRoom.transform.parent = roomsParent;
                         break;
-                    case "R":
+                    case 'R':
                         newRoom = Instantiate(possibleRoomsForR[Random.Range(0, possibleRoomsForR.Count - 1)],
                             point.position, Quaternion.identity);
                         newRoom.transform.parent = roomsParent;
                         break;
-                    case "U":
+                    case 'U':
                         newRoom = Instantiate(possibleRoomsForU[Random.Range(0, possibleRoomsForU.Count - 1)],
                             point.position, Quaternion.identity);
                         newRoom.transform.parent = roomsParent;
                         break;
-                    case "D":
+                    case 'D':
                         newRoom = Instantiate(possibleRoomsForD[Random.Range(0, possibleRoomsForD.Count - 1)],
                             point.position, Quaternion.identity);
                         newRoom.transform.parent = roomsParent;
@@ -103,7 +103,7 @@ public class MapGeneration : MonoBehaviour
                 {
                     if (room2.transform.position == point.position)
                     {
-                        var room2Directions = new List<string>();
+                        var room2Directions = new List<char>();
                         
                         var points2List = room2.transform.Find("Points");
                         foreach (Transform point2 in points2List)
@@ -112,12 +112,13 @@ public class MapGeneration : MonoBehaviour
                             room2Directions.Add(p2Side);
                         }
 
-                        if (pSide == "L" && !room2Directions.Contains("R") ||
-                            pSide == "R" && !room2Directions.Contains("L") ||
-                            pSide == "U" && !room2Directions.Contains("D") ||
-                            pSide == "D" && !room2Directions.Contains("U"))
+                        if (pSide == 'L' && !room2Directions.Contains('R') ||
+                            pSide == 'R' && !room2Directions.Contains('L') ||
+                            pSide == 'U' && !room2Directions.Contains('D') ||
+                            pSide == 'D' && !room2Directions.Contains('U'))
                         {
-                            room.transform.Find("BlockWalls").Find($"BlockWall_{pSide}").gameObject.SetActive(true);   
+                            room.transform.Find("Walls").Find($"Wall_{pSide}").gameObject.SetActive(true); 
+                            room.transform.Find("A_Lines").Find($"A_Line_{pSide}").gameObject.SetActive(false); 
                         }
                         
                         createBlock = false;
@@ -128,8 +129,84 @@ public class MapGeneration : MonoBehaviour
                 if (createBlock)
                 {
                     var side = point.gameObject.GetComponent<PointController>().side;
-                    room.transform.Find("BlockWalls").Find($"BlockWall_{side}").gameObject.SetActive(true);
+                    room.transform.Find("Walls").Find($"Wall_{side}").gameObject.SetActive(true);
+                    room.transform.Find("A_Lines").Find($"A_Line_{pSide}").gameObject.SetActive(false); 
                 }
+            }
+        }
+
+        TurnOnCorners();
+    }
+
+    private void TurnOnCorners()
+    {
+        foreach (var room in _roomsGameObjects)
+        {
+            var walls = room.transform.Find("Walls");
+
+            if (walls.Find("Wall_L").gameObject.activeSelf &&
+                walls.Find("Wall_U").gameObject.activeSelf)
+            {
+                room.transform.Find("Corners").Find("Corner_LU").gameObject.SetActive(true);
+            }
+            if (walls.Find("Wall_U").gameObject.activeSelf &&
+                     walls.Find("Wall_R").gameObject.activeSelf)
+            {
+                room.transform.Find("Corners").Find("Corner_RU").gameObject.SetActive(true);
+            }
+            if (walls.Find("Wall_R").gameObject.activeSelf &&
+                     walls.Find("Wall_D").gameObject.activeSelf)
+            {
+                room.transform.Find("Corners").Find("Corner_RD").gameObject.SetActive(true);
+            }
+            if (walls.Find("Wall_D").gameObject.activeSelf &&
+                     walls.Find("Wall_L").gameObject.activeSelf)
+            {
+                room.transform.Find("Corners").Find("Corner_LD").gameObject.SetActive(true);
+            }
+            
+            var aLines = room.transform.Find("A_Lines");
+
+            var aLineL = aLines.Find("A_Line_L");
+            var aLineU = aLines.Find("A_Line_U");
+            var aLineR = aLines.Find("A_Line_R");
+            var aLineD = aLines.Find("A_Line_D");
+            
+            if (aLineL && aLineU &&
+                aLineL.gameObject.activeSelf &&
+                aLineU.gameObject.activeSelf)
+            {
+                aLineL.Find("Side_Conflict_U").gameObject.SetActive(false);
+                aLineU.Find("Side_Conflict_L").gameObject.SetActive(false);
+                
+                room.transform.Find("InsightCorners").Find("InsCorner_LU").gameObject.SetActive(true);
+            }
+            if (aLineU && aLineR &&
+                aLineU.gameObject.activeSelf &&
+                aLineR.gameObject.activeSelf)
+            {
+                aLineU.Find("Side_Conflict_R").gameObject.SetActive(false);
+                aLineR.Find("Side_Conflict_U").gameObject.SetActive(false);
+                
+                room.transform.Find("InsightCorners").Find("InsCorner_RU").gameObject.SetActive(true);
+            }
+            if (aLineR && aLineD &&
+                aLineR.gameObject.activeSelf &&
+                aLineD.gameObject.activeSelf)
+            {
+                aLineR.Find("Side_Conflict_D").gameObject.SetActive(false);
+                aLineD.Find("Side_Conflict_R").gameObject.SetActive(false);
+                
+                room.transform.Find("InsightCorners").Find("InsCorner_RD").gameObject.SetActive(true);
+            }
+            if (aLineD && aLineL &&
+                aLineD.gameObject.activeSelf &&
+                aLineL.gameObject.activeSelf)
+            {
+                aLineD.Find("Side_Conflict_L").gameObject.SetActive(false);
+                aLineL.Find("Side_Conflict_D").gameObject.SetActive(false);
+                
+                room.transform.Find("InsightCorners").Find("InsCorner_LD").gameObject.SetActive(true);
             }
         }
     }

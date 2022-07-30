@@ -54,6 +54,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\PointController.cs" />
      <Compile Include="Assets\Scripts\MapGeneration.cs" />
+     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
  <Reference Include="UnityEngine">
  <HintPath>/Applications/Unity/Hub/Editor/2020.3.33f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>
